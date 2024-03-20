@@ -1,0 +1,14 @@
+/* src/styles.css */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@layer base {
+    @font-face {
+        font-family: 'Silkscreen';
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url(/Silkscreen-Regular.ttf);
+    }
+}

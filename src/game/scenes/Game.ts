@@ -186,7 +186,7 @@ export class Game extends Scene {
         this.inAir = true;
         this.dead = false;
         this.speed = 3;
-        this.canAddScore = true;
+        this.canAddScore = false;
         this.score = 0;
         this.sheepReachedTarget = false;
 
@@ -219,7 +219,7 @@ export class Game extends Scene {
                 this.dead = true;
 
                 const distFromHeadToFence = Math.abs(this.fences[i].collider.x - (this.sheep.x + this.sheep.displayWidth / 2));
-                console.log(distFromHeadToFence);
+                // console.log(distFromHeadToFence);
                 this.speed = -(distFromHeadToFence / 10 + 3);
 
             }, undefined, this);
@@ -266,7 +266,7 @@ export class Game extends Scene {
             }
         });
 
-        this.scoreLabel = this.add.text(10, 10, 'Score: 0', { fontSize: '32px', color: '#000' }).setScrollFactor(0);
+        this.scoreLabel = this.add.text(500, 10, 'Score: 0', { fontSize: '32px', color: '#000', fontFamily: 'Silkscreen' }).setScrollFactor(0).setOrigin(0.5, 0);
 
         EventBus.emit('current-scene-ready', this);
     }
