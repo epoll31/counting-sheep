@@ -46,12 +46,12 @@ function App() {
     }
 
     return (
-        <main className='flex flex-col h-screen w-full justify-center items-center gap-10 p-28 bg-stone-100 text-stone-700 dark:bg-stone-700 dark:text-stone-100'>
+        <main className='flex flex-col h-screen w-full justify-center items-center bg-stone-100 text-stone-700 dark:bg-stone-700 dark:text-stone-100'>
 
             {
                 width < Number(phaserRef.current?.game?.config.width ?? 0) ?
                     <p className='bg-stone-500 p-4 rounded-lg text-center'>This game requires a minimum width of <b>{phaserRef.current?.game?.config.width ?? 0}px</b>.</p> :
-                    <div className="flex flex-col font-[Silkscreen] gap-10">
+                    <div className="flex flex-col font-[Silkscreen] gap-10 p-28">
                         <h1 className='text-6xl text-center'>Counting Sheep</h1>
                         <PhaserGame ref={phaserRef} currentActiveScene={currentScene} />
                         <div className='flex flex-row w-full justify-center'>

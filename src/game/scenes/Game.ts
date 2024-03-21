@@ -76,7 +76,6 @@ class Background {
     fenceRows: Phaser.GameObjects.Rectangle[];
     timer: number;
     hills: Phaser.GameObjects.Sprite[];
-    hillTags: Phaser.Animations.Animation[];
     hillColors: number[];
     rand: Phaser.Math.RandomDataGenerator;
 
@@ -100,13 +99,12 @@ class Background {
             }
         }
 
-        this.hillTags = game.anims.createFromAseprite('hills');
         this.hills = [];
         this.hillColors = [0x6abe30, 0x4b692f, 0x99512c]
         for (let i = 0; i < 5; i++) {
             this.hills.push(game.add.sprite(this.rand.integerInRange(0, 1000), 300 + 50 * i, 'hills').setOrigin(0.5, 1).setDepth(-0.4).setTint(this.hillColors[Phaser.Math.RND.integerInRange(0, this.hillColors.length - 1)]));
             this.hills[i].play({
-                key: this.hillTags[this.rand.integerInRange(0, this.hillTags.length - 1)].key,
+                key: game.hillAnimations[this.rand.integerInRange(0, game.hillAnimations.length - 1)].key,
                 repeat: -1,
             });
             // const tint = this.rand.integerInRange(0, 255);
@@ -144,7 +142,7 @@ class Background {
                 this.hills[i].x = 1500
                 this.hills[i].y = 300 + + 50 * i;
                 this.hills[i].play({
-                    key: this.hillTags[this.rand.integerInRange(0, this.hillTags.length - 1)].key,
+                    key: game.hillAnimations[this.rand.integerInRange(0, game.hillAnimations.length - 1)].key,
                     repeat: -1,
                 });
                 this.hills[i].setTint(this.hillColors[Phaser.Math.RND.integerInRange(0, this.hillColors.length - 1)]);
@@ -160,6 +158,7 @@ export class Game extends Scene {
     camera: Phaser.Cameras.Scene2D.Camera;
     background: Background;
     sheep: Phaser.Physics.Arcade.Sprite;
+    sheepAnimations: Phaser.Animations.Animation[];
     fences: Fence[];
     inAir: boolean;
     dead: boolean;
@@ -169,6 +168,7 @@ export class Game extends Scene {
     scoreLabel: Phaser.GameObjects.Text;
     timer: Phaser.Time.TimerEvent;
     sheepReachedTarget: boolean;
+    hillAnimations: Phaser.Animations.Animation[];
 
     constructor() {
         super('Game');
@@ -180,6 +180,9 @@ export class Game extends Scene {
         this.load.image('fence-post', 'assets/fence-post.png');
         this.load.image('back-fence-post', 'assets/back-fence-post.png');
         this.load.aseprite('hills', 'assets/hills.png', 'assets/hills.json');
+
+        this.load.audio('Sheep1', ['assets/sounds/Sheep1.mp3', 'assets/sounds/Sheep1.ogg']);
+
     }
 
     create() {
@@ -193,9 +196,24 @@ export class Game extends Scene {
         this.camera = this.cameras.main;
         this.camera.setBackgroundColor(0x9ed3fe);
 
+
+        if (!this.sheepAnimations) {
+            console.log('created sheep');
+            this.sheepAnimations = this.anims.createFromAseprite('sheep');
+        }
+        else {
+            console.log('sheep already exists');
+        }
+        if (!this.hillAnimations) {
+            console.log('created hills');
+            this.hillAnimations = this.anims.createFromAseprite('hills');
+        }
+        else {
+            console.log('hills already exists');
+        }
+
         this.background = new Background(this);
 
-        this.anims.createFromAseprite('sheep');
         this.sheep = this.physics.add.sprite(0, 300, 'sheep').setOrigin(0.5, 1).setScale(5).setDepth(0).setGravityY(600).setCollideWorldBounds(true, undefined, 0.3, true);
         this.sheep.play({
             key: 'jumping',
@@ -213,7 +231,7 @@ export class Game extends Scene {
                     key: 'dead',
                     repeat: 0,
                 });
-                this.timer = this.time.delayedCall(5000, () => {
+                this.timer = this.time.delayedCall(3000, () => {
                     this.changeScene();
                 });
                 this.dead = true;
@@ -230,6 +248,9 @@ export class Game extends Scene {
                 this.sheep.setVelocityY(-400);
                 this.inAir = true;
                 this.sheep.anims.play({ key: 'jumping', repeat: -1 });
+                this.sound.play('Sheep1', {
+                    volume: 0.2
+                });
             }
         }
 
